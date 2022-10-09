@@ -1,1 +1,1 @@
-worker: sh worker/bin/Stasik
+worker: sh target/bin/Stasik
