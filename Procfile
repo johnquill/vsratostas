@@ -1,0 +1,1 @@
+worker: sh worker/bin/Stasik
