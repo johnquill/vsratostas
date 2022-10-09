@@ -20,15 +20,6 @@ public class CallbackHandler {
         return -1;
     }
 
-    /*public static EditMessageReplyMarkup editButtons(Message message, int num) {
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        return EditMessageReplyMarkup.builder()
-                .chatId(message.getChatId())
-                .messageId(message.getMessageId())
-                .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                .build();
-    }*/
-
     public static EditMessageText editMessage(Message message, int num) {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         String text = message.getText();
