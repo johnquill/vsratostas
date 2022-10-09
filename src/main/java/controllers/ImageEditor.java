@@ -22,7 +22,7 @@ public class ImageEditor {
     }
 
     private static int calcX(Integer width, Integer captionLength, Integer fontSize) {
-        return (int) ((width - fontSize/2 * captionLength * (double) (4/3)) / 0.84 / 2);
+        return (int) ((width - fontSize/2 * captionLength * (double) (4/3)) / 0.84 / 2) / 2;
     }
 
     private static int calcY(Integer height, Integer fontSize) {
