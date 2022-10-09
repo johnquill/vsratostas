@@ -30,7 +30,7 @@ public class ImageEditor {
     }
 
     private static int calcFontSize(Integer width, Integer height, Integer captionLength) {
-        return min((int) (width/captionLength/((double) 4/3))*2,
-                (int) (height/10/((double) 4/3 * 0.84)))-2;
+        return min((int) ((width/captionLength/((double) 4/3))*2*0.84),
+                (int) (height/10/((double) 4/3)));
     }
 }
