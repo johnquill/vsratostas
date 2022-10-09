@@ -14,18 +14,25 @@ public class Captions {
         properties.load(new FileReader(fileName));
     }
 
+    public static void saveCaptions() {
+        try {
+            properties.store(new FileWriter("src/main/resources/captions.properties"), null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getRandomCaption() {
         int n = (int) (Math.random() * properties.size());
         return (String) properties.get(String.valueOf(n));
     }
 
-    public void addCaption(String caption) throws IOException {
-        properties.setProperty(String.valueOf(properties.size()), caption);
-        try {
-            properties.store(new FileWriter("src/main/resources/captions.properties"), null);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public static int addCaption(String caption) {
+        int number = properties.size();
+        properties.setProperty(String.valueOf(number), caption);
+        return number;
     }
+
+
 
 }
