@@ -5,10 +5,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 public class HelpCommandHandler {
 
+    public static final String HELP = "Пришли фото с подписью \"Cтасик\"\n\n" +
+            "/add_caption новая подпись - предложить подпись \"новая подпись\"\n";
+
     public static SendMessage returnMessage(Message message) {
-        String text = "Пришли фото с подписью \"стасик\"";
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(text);
+        sendMessage.setText(HELP);
         sendMessage.setChatId(message.getChatId());
         return sendMessage;
     }
