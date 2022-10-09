@@ -22,7 +22,7 @@ public class StasikBot extends TelegramLongPollingBot {
 
     private static ChatsAndChances chatsAndChances;
 
-    public static Phrases phrases;
+    public static Captions captions;
 
     public StasikBot(String bot_name, String bot_token) {
         BOT_NAME = bot_name;
@@ -33,7 +33,7 @@ public class StasikBot extends TelegramLongPollingBot {
             throw new RuntimeException(e);
         }
         try {
-            phrases = new Phrases("src/main/resources/phrases.properties");
+            captions = new Captions("src/main/resources/captions.properties");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -14,8 +14,6 @@ public class Main {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(new StasikBot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN")));
-            /*botsApi.registerBot(new StasikBot("Всратостас",
-                    "5606057201:AAEyBhA_UVZxcOdL9EGU5zqQP7bHel_cvqA"));*/
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

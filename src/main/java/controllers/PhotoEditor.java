@@ -16,7 +16,7 @@ public class PhotoEditor {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(message.getChatId());
 
-        PhotoSize photo = message.getPhoto().get(3);
+        PhotoSize photo = message.getPhoto().get(message.getPhoto().size()-1);
         File file;
         try {
             file = FileDownloader.downloadById(photo.getFileId());
@@ -30,7 +30,7 @@ public class PhotoEditor {
             throw new RuntimeException(e);
         }
 
-        bufferedImage = ImageEditor.addPhrase(bufferedImage, photo);
+        bufferedImage = ImageEditor.addCaption(bufferedImage, photo);
         try {
             ImageIO.write(bufferedImage, "jpg", file);
         } catch (IOException e) {
