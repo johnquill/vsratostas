@@ -7,7 +7,6 @@ import handlers.commands.AddCaptionCommandHandler;
 import handlers.commands.DownloadCaptionsCommandHandler;
 import handlers.commands.GetIdCommandHandler;
 import handlers.commands.HelpCommandHandler;
-import javassist.bytecode.analysis.Executor;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -29,12 +28,11 @@ public class StasikBot extends TelegramLongPollingBot {
             new HashSet<>(Arrays.asList("Стасик", "стасик", "Всратостас", "всратостас"));
 
     public static final String ADMIN_ID = "927853486";
-    public static final String MODER_ID = "-881960010";
+    public static final String MODER_ID = "-1001514089748";
 
     private static ChatsAndChances chatsAndChances;
 
     public static Captions captions;
-    public static Executor exe;
 
     public StasikBot(String bot_name, String bot_token) {
         BOT_NAME = bot_name;
@@ -100,8 +98,10 @@ public class StasikBot extends TelegramLongPollingBot {
                 execute(GetIdCommandHandler.returnMessage(message));
                 break;
             case "/add_caption":
-                execute(AddCaptionCommandHandler.returnMessage(message));
-                execute(AddCaptionCommandHandler.sendOnModering(message));
+                if (AddCaptionCommandHandler.hasCaption(message.getText())) {
+                    execute(AddCaptionCommandHandler.sendOnModering(message));
+                    execute(AddCaptionCommandHandler.returnMessage(message));
+                }
                 break;
             case "/download_captions":
                 execute(DownloadCaptionsCommandHandler.returnMessage(message));

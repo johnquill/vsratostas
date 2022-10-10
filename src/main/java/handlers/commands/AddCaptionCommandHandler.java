@@ -29,6 +29,13 @@ public class AddCaptionCommandHandler {
         SendMessage sendMessage = new SendMessage(MODER_ID,
                 String.format(MODER_REQUEST, message.getChatId() + "|" + message.getChat().getTitle(),
                         message.getFrom().getId() + "|" + message.getFrom().getUserName(), caption));
+        sendMessage.setReplyMarkup(InlineKeyboardMarkup.builder()
+                .keyboard(addButtons())
+                .build());
+        return sendMessage;
+    }
+
+    private static List<List<InlineKeyboardButton>> addButtons() {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         buttons.add(Arrays.asList(
                 InlineKeyboardButton.builder()
@@ -39,7 +46,10 @@ public class AddCaptionCommandHandler {
                         .text("👎")
                         .callbackData("NO")
                         .build()));
-        sendMessage.setReplyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build());
-        return sendMessage;
+        return buttons;
+    }
+
+    public static boolean hasCaption(String text) {
+        return text.split(" ").length > 1;
     }
 }
