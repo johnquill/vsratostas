@@ -6,7 +6,7 @@ public class CommandHandler {
         String[] arr = text.split("@");
         if (arr.length > 1) {
             String botName = arr[1].split(" ")[0];
-            if (!botName.equals("vsratostas")) {
+            if (!botName.equals("vsratostasbot")) {
                 return "";
             }
         }
