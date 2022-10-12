@@ -3,6 +3,7 @@ package handlers;
 import controllers.PhotoEditor;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import stasik.ChatsAndChances;
 import stasik.StasikBot;
 
 
@@ -29,7 +30,12 @@ public class MessageHandler {
         if (StasikBot.isEqualsBotName(message.getCaption())) {
             return PhotoEditor.editPhoto(message);
         } else {
-            return null;
+            int chance = ChatsAndChances.getChance(message.getChatId());
+            if ((int) (Math.random() * 99) < chance) {
+                return PhotoEditor.editPhoto(message);
+            } else {
+                return null;
+            }
         }
     }
 }

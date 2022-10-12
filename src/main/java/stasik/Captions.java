@@ -1,6 +1,5 @@
 package stasik;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,7 +31,4 @@ public class Captions {
         properties.setProperty(String.valueOf(number), caption);
         return number;
     }
-
-
-
 }

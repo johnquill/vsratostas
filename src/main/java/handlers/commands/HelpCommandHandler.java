@@ -6,7 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class HelpCommandHandler {
 
     public static final String HELP = "Пришли фото с подписью \"Cтасик\"\n\n" +
-            "/add_caption новая подпись - предложить подпись \"новая подпись\"\n";
+            "/add_caption новая подпись - предложить подпись \"новая подпись\"\n\n" +
+            "/set_chance 50 - установить шанс случайного срабатывания Стасика на всланное фото равным 50%. " +
+            "Изначально этот шанс установлен на 10%";
 
     public static SendMessage returnMessage(Message message) {
         SendMessage sendMessage = new SendMessage();

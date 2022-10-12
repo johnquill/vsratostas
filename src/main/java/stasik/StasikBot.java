@@ -1,12 +1,11 @@
 package stasik;
 
+import controllers.UserStatusDefiner;
 import handlers.CallbackHandler;
 import handlers.CommandHandler;
 import handlers.MessageHandler;
-import handlers.commands.AddCaptionCommandHandler;
-import handlers.commands.DownloadCaptionsCommandHandler;
-import handlers.commands.GetIdCommandHandler;
-import handlers.commands.HelpCommandHandler;
+import handlers.OnMyChatMemberHandler;
+import handlers.commands.*;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -22,7 +21,7 @@ import java.util.Objects;
 
 public class StasikBot extends TelegramLongPollingBot {
 
-    private static String BOT_NAME;
+    public static String BOT_NAME;
     public static String BOT_TOKEN;
     public static final HashSet<String> STASIK_NAMES =
             new HashSet<>(Arrays.asList("Стасик", "стасик", "Всратостас", "всратостас"));
@@ -38,7 +37,7 @@ public class StasikBot extends TelegramLongPollingBot {
         BOT_NAME = bot_name;
         BOT_TOKEN = bot_token;
         try {
-            chatsAndChances = new ChatsAndChances(new File("src/main/resources/chatChances.properties"));
+            chatsAndChances = new ChatsAndChances("src/main/resources/chatChances.properties");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -62,27 +61,35 @@ public class StasikBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
-        if (update.hasCallbackQuery()) {
-            handleCallback(update.getCallbackQuery());
-        } else if (Objects.isNull(message)) {
-            return;
-        }
-        try {
-            if (message.isCommand()) {
-                handleCommand(update.getMessage());
-            } else {
-                execute(MessageHandler.handle(message));
-
+        if (update.hasMyChatMember()) {
+            if (update.getMyChatMember().getNewChatMember().getStatus().equals("member") &&
+                    update.getMyChatMember().getChat().getId().toString().startsWith("-")) {
+                try {
+                    execute(OnMyChatMemberHandler.returnMessage(update.getMyChatMember().getChat().getId()));
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+                ChatsAndChances.addChances(update.getMyChatMember().getChat().getId());
             }
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+        } else if (update.hasCallbackQuery()) {
+            handleCallback(update.getCallbackQuery());
+        } else if (!Objects.isNull(message)) {
+            try {
+                if (message.isCommand()) {
+                    handleCommand(message);
+                } else {
+                    execute(MessageHandler.handle(message));
+
+                }
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     private void handleCallback(CallbackQuery callbackQuery) {
         int num = CallbackHandler.handle(callbackQuery.getMessage(), callbackQuery.getData());
         try {
-            //execute(CallbackHandler.editButtons(callbackQuery.getMessage(), num));
             execute(CallbackHandler.editMessage(callbackQuery.getMessage(), num));
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
@@ -90,7 +97,15 @@ public class StasikBot extends TelegramLongPollingBot {
     }
 
     public void handleCommand(Message message) throws TelegramApiException {
-        switch (CommandHandler.getCommand(message.getText())) {
+        String command = CommandHandler.getCommand(message.getText());
+        if (UserStatusDefiner.isAdmin(message.getFrom().getId(), message.getChatId())) {
+            switch (command) {
+                case "/set_chance":
+                    execute(SetChanceCommandHandler.returnMessage(message));
+                    break;
+            }
+        }
+        switch (command) {
             case "/help":
                 execute(HelpCommandHandler.returnMessage(message));
                 break;
@@ -103,8 +118,9 @@ public class StasikBot extends TelegramLongPollingBot {
                     execute(AddCaptionCommandHandler.returnMessage(message));
                 }
                 break;
-            case "/download_captions":
-                execute(DownloadCaptionsCommandHandler.returnMessage(message));
+            case "/download_properties":
+                execute(DownloadPropertiesCommandHandler.sendCaptions(message));
+                execute(DownloadPropertiesCommandHandler.sendChatChances(message));
                 break;
         }
     }
