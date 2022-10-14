@@ -38,9 +38,7 @@ public class FileDownloader {
 
     private static String downloadFileByPath(String path) throws IOException {
         URL url = new URL(DOWNLOAD_FILE_URL + path);
-        String[] dir = new File("src/main/resources/images").list();
-        int n = dir == null ? 0 : dir.length;
-        String fileName = "src/main/resources/images/image" + n + ".jpg";
+        String fileName = "src/main/resources/" + path;
         FileOutputStream fos = new FileOutputStream(fileName);
         ReadableByteChannel rbc = Channels.newChannel(url.openStream());
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
