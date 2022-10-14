@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
 public class ChatsAndChances {
@@ -31,6 +32,11 @@ public class ChatsAndChances {
     }
 
     public static int getChance(Long chatId) {
-        return Integer.parseInt((String) properties.get(chatId.toString()));
+        String chance = (String) properties.get(chatId.toString());
+        if (Objects.isNull(chance)) {
+            editChances(chatId, 10);
+            return 10;
+        }
+        return Integer.parseInt(chance);
     }
 }
