@@ -27,7 +27,7 @@ public class StasikBot extends TelegramLongPollingBot {
     public static final String ADMIN_ID = "927853486";
     public static final String MODER_ID = "-1001514089748";
 
-    private static ChatsAndChances chatsAndChances;
+    public static ChatsAndChances chatsAndChances;
 
     public static Captions captions;
 

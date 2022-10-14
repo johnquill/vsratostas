@@ -1,6 +1,5 @@
 package stasik;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class ChatsAndChances {
         properties.setProperty(chatId.toString(), String.valueOf(chances));
     }
 
-    public static int getChance(Long chatId) {
+    public int getChance(Long chatId) {
         String chance = (String) properties.get(chatId.toString());
         if (Objects.isNull(chance)) {
             editChances(chatId, 10);
