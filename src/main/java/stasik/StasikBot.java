@@ -98,13 +98,6 @@ public class StasikBot extends TelegramLongPollingBot {
 
     public void handleCommand(Message message) throws TelegramApiException {
         String command = CommandHandler.getCommand(message.getText());
-        if (UserStatusDefiner.isAdmin(message.getFrom().getId(), message.getChatId())) {
-            switch (command) {
-                case "/set_chance":
-                    execute(SetChanceCommandHandler.returnMessage(message));
-                    break;
-            }
-        }
         switch (command) {
             case "/help":
                 execute(HelpCommandHandler.returnMessage(message));
@@ -121,6 +114,9 @@ public class StasikBot extends TelegramLongPollingBot {
             case "/download_properties":
                 execute(DownloadPropertiesCommandHandler.sendCaptions(message));
                 execute(DownloadPropertiesCommandHandler.sendChatChances(message));
+                break;
+            case "/set_chance":
+                execute(SetChanceCommandHandler.returnMessage(message));
                 break;
         }
     }
