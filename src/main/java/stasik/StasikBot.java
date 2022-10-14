@@ -1,10 +1,9 @@
 package stasik;
 
-import controllers.UserStatusDefiner;
 import handlers.CallbackHandler;
 import handlers.CommandHandler;
 import handlers.MessageHandler;
-import handlers.OnMyChatMemberHandler;
+import handlers.HelloMessage;
 import handlers.commands.*;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -13,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -65,7 +63,7 @@ public class StasikBot extends TelegramLongPollingBot {
             if (update.getMyChatMember().getNewChatMember().getStatus().equals("member") &&
                     update.getMyChatMember().getChat().getId().toString().startsWith("-")) {
                 try {
-                    execute(OnMyChatMemberHandler.returnMessage(update.getMyChatMember().getChat().getId()));
+                    execute(HelloMessage.returnMessage(update.getMyChatMember().getChat().getId()));
                 } catch (TelegramApiException e) {
                     throw new RuntimeException(e);
                 }
@@ -117,6 +115,9 @@ public class StasikBot extends TelegramLongPollingBot {
                 break;
             case "/set_chance":
                 execute(SetChanceCommandHandler.returnMessage(message));
+                break;
+            case "/start":
+                execute(HelloMessage.returnMessage(message.getChatId()));
                 break;
         }
     }
