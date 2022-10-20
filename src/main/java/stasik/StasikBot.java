@@ -113,6 +113,9 @@ public class StasikBot extends TelegramLongPollingBot {
                 execute(DownloadPropertiesCommandHandler.sendCaptions(message));
                 execute(DownloadPropertiesCommandHandler.sendChatChances(message));
                 break;
+            case "/processors":
+                execute(ProcessorsCommandHandler.returnMessage(message));
+                break;
             case "/set_chance":
                 execute(SetChanceCommandHandler.returnMessage(message));
                 break;
