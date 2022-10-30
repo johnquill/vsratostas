@@ -16,7 +16,7 @@ public class ImageEditor {
         int fontSize = calcFontSize(photo.getWidth(), photo.getHeight(), caption.length());
         int x = calcX(photo.getWidth(), caption.length(), fontSize);
         int y = calcY(photo.getHeight(), fontSize);
-        graphics.setFont(new Font("Lobster", Font.BOLD, fontSize));
+        graphics.setFont(new Font("Lobster Regular", Font.PLAIN, fontSize));
         graphics.drawString(caption, x, y);
         return image;
     }
