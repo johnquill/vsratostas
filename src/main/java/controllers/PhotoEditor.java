@@ -29,7 +29,7 @@ public class PhotoEditor {
             throw new RuntimeException(e);
         }
 
-        bufferedImage = ImageEditor.addCaption(bufferedImage, photo);
+        ImageEditor.addCaption(bufferedImage);
         try {
             ImageIO.write(bufferedImage, "jpg", file);
         } catch (IOException e) {

@@ -32,6 +32,9 @@ public class ChatsAndChances {
 
     public int getChance(Long chatId) {
         String chance = (String) properties.get(chatId.toString());
+        if (!chatId.toString().startsWith("-")) {
+            return 100;
+        }
         if (Objects.isNull(chance)) {
             editChances(chatId, 10);
             return 10;

@@ -12,9 +12,9 @@ import static stasik.StasikBot.captions;
 
 public class ImageEditor {
 
-    public static BufferedImage addCaption(BufferedImage image, PhotoSize photo) {
+    public static BufferedImage addCaption(BufferedImage image) {
         String caption = captions.getRandomCaption();
-        Font font = createFontToFit(new Font("Lobster Regular", Font.PLAIN, 80), caption, image);
+        Font font = createFontToFit(new Font("Lobster Regular", Font.PLAIN, 1000), caption, image);
 
         AttributedString attributedText = new AttributedString(caption);
         attributedText.addAttribute(TextAttribute.FONT, font);
@@ -25,7 +25,7 @@ public class ImageEditor {
 
         FontMetrics metrics = g2d.getFontMetrics(font);
         int positionX = (image.getWidth() - metrics.stringWidth(caption)) / 2;
-        int positionY = (int) ((image.getHeight() - metrics.getHeight() * 1.7) + metrics.getAscent());
+        int positionY = (int) ((image.getHeight() * 0.98) - metrics.getHeight() / 2);
 
         attributedText.addAttribute(TextAttribute.FOREGROUND, Color.BLACK);
         g2d.drawString(attributedText.getIterator(),
@@ -52,7 +52,7 @@ public class ImageEditor {
 
         if(!textFits) {
             double widthBasedFontSize = (baseFont.getSize2D() * image.getWidth() * 0.9) / expectedWidth;
-            double heightBasedFontSize = (baseFont.getSize2D() * image.getHeight()) / expectedHeight;
+            double heightBasedFontSize = (baseFont.getSize2D() * image.getHeight() / 15) / expectedHeight;
 
             double newFontSize = Math.min(widthBasedFontSize, heightBasedFontSize);
             newFont = baseFont.deriveFont(baseFont.getStyle(), (float)newFontSize);
