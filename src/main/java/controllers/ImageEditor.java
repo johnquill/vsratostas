@@ -1,6 +1,6 @@
 package controllers;
 
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import stasik.CaptionPlacement;
 
 import java.awt.*;
 import java.awt.font.GlyphVector;
@@ -12,7 +12,7 @@ import static stasik.StasikBot.captions;
 
 public class ImageEditor {
 
-    public static BufferedImage addCaption(BufferedImage image) {
+    public static BufferedImage addCaption(BufferedImage image, CaptionPlacement placement) {
         String caption = captions.getRandomCaption();
         Font font = createFontToFit(new Font("Lobster Regular", Font.PLAIN, 1000), caption, image);
 
@@ -25,8 +25,12 @@ public class ImageEditor {
 
         FontMetrics metrics = g2d.getFontMetrics(font);
         int positionX = (image.getWidth() - metrics.stringWidth(caption)) / 2;
-        int positionY = (int) ((image.getHeight() * 0.98) - metrics.getHeight() / 2);
-
+        int positionY;
+        if (placement.equals(CaptionPlacement.DOWN)) {
+            positionY = image.getHeight() - metrics.getHeight() + metrics.getAscent() - image.getHeight() / 20;
+        } else {
+            positionY = image.getHeight() / 20 + metrics.getHeight();
+        }
         attributedText.addAttribute(TextAttribute.FOREGROUND, Color.BLACK);
         g2d.drawString(attributedText.getIterator(),
                 (int) (positionX + metrics.getHeight() * 0.03),
@@ -48,14 +52,14 @@ public class ImageEditor {
         double expectedWidth = outline.getBounds().getWidth();
         double expectedHeight = outline.getBounds().getHeight();
 
-        boolean textFits = image.getWidth() >= expectedWidth && image.getHeight() >= expectedHeight;
+        boolean textFits = image.getWidth() >= expectedWidth && image.getHeight() / 10 >= expectedHeight;
 
         if(!textFits) {
             double widthBasedFontSize = (baseFont.getSize2D() * image.getWidth() * 0.9) / expectedWidth;
-            double heightBasedFontSize = (baseFont.getSize2D() * image.getHeight() / 15) / expectedHeight;
+            double heightBasedFontSize = (baseFont.getSize2D() * image.getHeight() / 10) / expectedHeight;
 
             double newFontSize = Math.min(widthBasedFontSize, heightBasedFontSize);
-            newFont = baseFont.deriveFont(baseFont.getStyle(), (float)newFontSize);
+            newFont = baseFont.deriveFont(baseFont.getStyle(), (float) newFontSize);
         }
         return newFont;
     }

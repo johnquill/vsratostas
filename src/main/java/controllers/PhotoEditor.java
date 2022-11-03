@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import stasik.CaptionPlacement;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class PhotoEditor {
-    public static SendPhoto editPhoto(Message message) {
+    public static SendPhoto editPhoto(Message message, CaptionPlacement placement) {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(message.getChatId());
 
@@ -29,7 +30,7 @@ public class PhotoEditor {
             throw new RuntimeException(e);
         }
 
-        ImageEditor.addCaption(bufferedImage);
+        ImageEditor.addCaption(bufferedImage, placement);
         try {
             ImageIO.write(bufferedImage, "jpg", file);
         } catch (IOException e) {
