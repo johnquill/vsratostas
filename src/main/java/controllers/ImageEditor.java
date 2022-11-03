@@ -29,7 +29,7 @@ public class ImageEditor {
         if (placement.equals(CaptionPlacement.DOWN)) {
             positionY = image.getHeight() - metrics.getHeight() + metrics.getAscent() - image.getHeight() / 20;
         } else {
-            positionY = image.getHeight() / 20 + metrics.getHeight();
+            positionY = image.getHeight() / 10 + metrics.getHeight() - metrics.getAscent();
         }
         attributedText.addAttribute(TextAttribute.FOREGROUND, Color.BLACK);
         g2d.drawString(attributedText.getIterator(),

@@ -1,6 +1,7 @@
 package handlers;
 
 import controllers.PhotoEditor;
+import org.apache.commons.codec.binary.StringUtils;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import stasik.CaptionPlacement;
@@ -28,7 +29,7 @@ public class MessageHandler {
         String[] textWords = message.getText().split(" ");
         if (replied.hasPhoto() && StasikBot.isEqualsBotName(textWords[0])) {
             CaptionPlacement placement = CaptionPlacement.DOWN;
-            if (textWords[1].matches("(.+)?верх(.+)?")) {
+            if (textWords.length > 1 && textWords[1].toLowerCase().matches("(.+)?верх(.+)?")) {
                 placement = CaptionPlacement.UP;
             }
             return PhotoEditor.editPhoto(message.getReplyToMessage(), placement);
@@ -40,9 +41,7 @@ public class MessageHandler {
         String[] captionWords = message.getCaption().split(" ");
         if (StasikBot.isEqualsBotName(captionWords[0])) {
             CaptionPlacement placement = CaptionPlacement.DOWN;
-            Pattern pattern = Pattern.compile("(.+)?верх(.+)?");
-            Matcher matcher = pattern.matcher(captionWords[1].toLowerCase());
-            if (matcher.find()) {
+            if (captionWords.length > 1 && captionWords[1].toLowerCase().matches("(.+)?верх(.+)?")) {
                 placement = CaptionPlacement.UP;
             }
             return PhotoEditor.editPhoto(message, placement);

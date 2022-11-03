@@ -15,14 +15,15 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 
 public class StasikBot extends TelegramLongPollingBot {
 
     public static String BOT_NAME;
     public static String BOT_TOKEN;
-    public static final HashSet<String> STASIK_NAMES =
-            new HashSet<>(Arrays.asList("Стасик", "стасик", "Всратостас", "всратостас"));
+    public static final HashSet<String> STASIK_NAMES = new HashSet<>(Arrays.asList("стасик", "всратостас", "славик",
+            "всратослав", "стас", "сосик", "стасян", "стася"));
 
     public static final String ADMIN_ID = "927853486";
     public static final String MODER_ID = "-1001514089748";
@@ -129,7 +130,7 @@ public class StasikBot extends TelegramLongPollingBot {
     }
 
     public static boolean isEqualsBotName(String str) {
-        return !Objects.isNull(str) && !str.isEmpty() && (StasikBot.compareWithBotNames(str));
+        return !Objects.isNull(str) && !str.isEmpty() && (StasikBot.compareWithBotNames(str.toLowerCase()));
     }
 
     @NotNull
