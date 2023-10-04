@@ -1,27 +1,23 @@
 package stasik;
 
-import handlers.CallbackHandler;
-import handlers.CommandHandler;
-import handlers.MessageHandler;
-import handlers.HelloMessage;
-import handlers.commands.*;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StasikBot extends TelegramLongPollingBot {
 
     public static String BOT_NAME;
+
     public static String BOT_TOKEN;
+
     public static final HashSet<String> STASIK_NAMES = new HashSet<>(Arrays.asList("стасик", "всратостас", "славик",
             "всратослав", "стас", "сосик", "стасян", "стася"));
 
@@ -29,22 +25,29 @@ public class StasikBot extends TelegramLongPollingBot {
     public static final String MODER_ID = "-1001514089748";
 
     public static ChatsAndChances chatsAndChances;
-
     public static Captions captions;
+    public Queue<Object> receiveQueue = new ConcurrentLinkedQueue<>();
+    public Queue<Object> sendQueue = new ConcurrentLinkedQueue<>();
 
     public StasikBot(String bot_name, String bot_token) {
         BOT_NAME = bot_name;
         BOT_TOKEN = bot_token;
         try {
             chatsAndChances = new ChatsAndChances("src/main/resources/chatChances.properties");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             captions = new Captions("src/main/resources/captions.properties");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        MessageSender messageSender = new MessageSender(this);
+        Thread sender = new Thread(messageSender);
+        sender.setDaemon(true);
+        sender.setName("Sender");
+        sender.start();
+        MessageReceiver messageReceiver = new MessageReceiver(this);
+        Thread receiver = new Thread(messageReceiver);
+        receiver.setDaemon(true);
+        receiver.setName("Receiver");
+        receiver.start();
     }
 
     @Override
@@ -59,73 +62,12 @@ public class StasikBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Message message = update.getMessage();
-        if (update.hasMyChatMember()) {
-            if (update.getMyChatMember().getNewChatMember().getStatus().equals("member") &&
-                    update.getMyChatMember().getChat().getId().toString().startsWith("-")) {
-                try {
-                    execute(HelloMessage.returnMessage(update.getMyChatMember().getChat().getId()));
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
-                ChatsAndChances.addChances(update.getMyChatMember().getChat().getId());
-            }
-        } else if (update.hasCallbackQuery()) {
-            handleCallback(update.getCallbackQuery());
-        } else if (!Objects.isNull(message)) {
-            try {
-                if (message.isCommand()) {
-                    handleCommand(message);
-                } else {
-                    execute(MessageHandler.handle(message));
-
-                }
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        receiveQueue.add(update);
     }
 
-    private void handleCallback(CallbackQuery callbackQuery) {
-        int num = CallbackHandler.handle(callbackQuery.getMessage(), callbackQuery.getData());
-        try {
-            execute(CallbackHandler.editMessage(callbackQuery.getMessage(), num));
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void handleCommand(Message message) throws TelegramApiException {
-        String command = CommandHandler.getCommand(message.getText());
-        switch (command) {
-            case "/help":
-                execute(HelpCommandHandler.returnMessage(message));
-                break;
-            case "/get_id":
-                execute(GetIdCommandHandler.returnMessage(message));
-                break;
-            case "/add_caption":
-                if (AddCaptionCommandHandler.hasCaption(message.getText())) {
-                    execute(AddCaptionCommandHandler.sendOnModering(message));
-                    execute(AddCaptionCommandHandler.returnMessage(message));
-                }
-                break;
-            case "/download_properties":
-                execute(DownloadPropertiesCommandHandler.sendCaptions(message));
-                execute(DownloadPropertiesCommandHandler.sendChatChances(message));
-                break;
-            case "/processors":
-                execute(ProcessorsCommandHandler.returnMessage(message));
-            case "/getFonts":
-                execute(GetFontsCommandHandler.returnMessage(message));
-
-                break;
-            case "/set_chance":
-                execute(SetChanceCommandHandler.returnMessage(message));
-                break;
-            case "/start":
-                execute(HelloMessage.returnMessage(message.getChatId()));
-                break;
+    public void addToSend(Object object) {
+        if (!Objects.isNull(object)) {
+            sendQueue.add(object);
         }
     }
 
@@ -137,4 +79,5 @@ public class StasikBot extends TelegramLongPollingBot {
     public static boolean compareWithBotNames(@NotNull String str) {
         return STASIK_NAMES.contains(str);
     }
+
 }
